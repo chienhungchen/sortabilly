@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>DragnDrop Testing</title>
+        <style>
+            .draggie {
+                width: 100px;
+                height: 100px;
+                background-color: red;
+                z-index: 2;
+            }
+
+            .transition {
+                transition: all 0.5s ease-in-out;
+                -webkit-transition: all 0.5s ease-in-out;
+            }
+
+            #dragster-parent, .draggie-parent {
+                display: inline-block;
+            }
+
+            #dropster {
+                width: 150px;
+                height: 150px;
+                margin: 50px 150px 50px;
+                background-color: #888;
+                position: absolute;
+                z-index: 1;
+            }
+
+            .dragist, .draggernaut {
+                width: 50px;
+                height: 50px;
+                z-index: 2;
+            }
+
+            .draggernaut {
+                margin-top: 10px;
+            }
+
+            .draggernaut2 {
+                
+                float: left;
+            }
+
+            .test {
+                animation: fadein 1s;
+                -webkit-animation: fadein 1s;
+            }
+
+            .green { background-color: green; }
+            .blue { background-color: blue; }
+            .yellow { background-color: yellow; }
+            .chartreuse { background-color: chartreuse; }
+            .cyan { background-color: cyan; }
+            .gold { background-color: gold; }
+
+            @keyframes fadein {
+                from { opacity:0; }
+                to { opacity:1; }
+            }
+
+            @-moz-keyframes fadein { /* Firefox */
+                from { opacity:0; }
+                to { opacity:1; }
+            }
+
+            @-webkit-keyframes fadein { /* Safari and Chrome */
+                from { opacity:0; }
+                to { opacity:1; }
+            }
+
+
+            #sortable {
+                width: 50px;
+                height: 500px;
+                padding: 0px 5px;
+                margin: 0px 150px;
+                background-color: #888;
+                position: absolute;
+                z-index: 1;
+                display: inline-block;
+            }
+
+            #sortable2 {
+                width: 300px;
+                height: 100px;
+                padding: 0px 5px;
+                margin: 50px 300px 50px;
+                background-color: #888;
+                position: absolute;
+                z-index: 1;
+            }
+
+            .grid {
+                float: left;
+            }
+
+            ul {
+                list-style: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="version">0.0.1</div>
+        <div id="info"></div>
+        <ul class="draggie-parent">
+            <li class="dragmiester draggernaut green"></li>
+            <li class="dragmiester draggernaut blue"></li>
+            <li class="dragmiester draggernaut yellow"></li>
+        </ul>
+        <ul id="sortable">
+            <li class="draggernaut gold"><span class="draggernaut-handle">1</span></li>
+            <li class="draggernaut cyan"><span class="draggernaut-handle">2</span></li>
+            <li class="draggernaut chartreuse"><span class="draggernaut-handle">3</span></li>
+            <li class="draggernaut gold"><span class="draggernaut-handle">4</span></li>
+            <li class="draggernaut cyan"><span class="draggernaut-handle">5</span></li>
+            <li class="draggernaut chartreuse"><span class="draggernaut-handle">6</span></li>
+        </ul>
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="http://draggabilly.desandro.com/draggabilly.pkgd.js"></script>
+        <script src="jquery.droppabilly.js"></script>
+        <script src="jquery.sortabilly.js"></script>
+        <script>
+            $(function(){
+                function onDragMove( instance, event, pointer,$dragParent ) {
+                }
+
+                function onDragStart( instance, event, pointer ,$dragParent) {
+                    $(instance.element).removeClass('transition').removeClass('test');
+                }
+
+                function onDragEnd( instance, event, pointer ,$dragParent) {
+                    var $drag = $(instance.element);
+                    if(droppedSuccess) {
+                        if($drag.hasClass('green')) $drag.removeClass('chartreuse');
+                        else if($drag.hasClass('blue')) $drag.removeClass('cyan');
+                        else if($drag.hasClass('yellow')) $drag.removeClass('gold');
+                        $drag.css({
+                            left: '0px',
+                            top: '0px'
+                        }).addClass('test');
+                        droppedSuccess = false;
+                    }
+                    else {
+                        //$(instance.element).animate({left: '0px', top: '0px'});
+                        $(instance.element).addClass('transition').css({
+                            transform: 'translate3d(' + -instance.position.x + 'px, ' + -instance.position.y + 'px, 0)',
+                            '-webkit-transform': 'translate3d(' + -instance.position.x + 'px, ' + -instance.position.y + 'px, 0)'
+                        });
+                    }
+                }
+
+                //var draggie = new Draggabilly($("#dragster")[0]);
+                //var $dragParent = $(draggie.element).parent();
+                var droppedSuccess = false;
+                var toDuration = 500;
+                var dragists = [];
+
+                $('.dragmiester').each(function(){
+                    var draggie = new Draggabilly(this);
+                    var $dragParent = $(draggie.element).parent();
+                    draggie.on('dragMove', function(instance, event, pointer) { 
+                        onDragMove(instance, event, pointer, $dragParent);
+                    });
+                    draggie.on('dragStart', function(instance, event, pointer) { 
+                        onDragStart(instance, event, pointer, $dragParent);
+                    });
+                    draggie.on('dragEnd', function(instance, event, pointer) { 
+                        onDragEnd(instance, event, pointer, $dragParent);
+                    });
+                    dragists.push(draggie);
+                });
+
+                $('#sortable').sortabilly({
+                	//handle: '.draggernaut-handle',
+                	//containment: '#sortable',
+                	overlapSensitivity: 0.6,
+                	animationDuration: 300,
+                	connect: {
+                		elements: '.dragmiester',
+                		over: function(sort, drag) {
+                			$('#info').text('over event triggered');
+                		},
+                		out: function(sort, drag) {
+                			$('#info').text('out event triggered');
+                		},
+                		drop: function(sort, drag) {
+                			$('#info').text('drop event triggered');
+                		}
+                	}
+                });
+
+                //$('#sortable2').sortabilly({});
+            });
+        </script>
+    </body>
+</html>

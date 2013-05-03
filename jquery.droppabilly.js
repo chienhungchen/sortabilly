@@ -1,5 +1,5 @@
 // jquery.droppabilly.js
-// Version: 0.0.1
+// Version: 0.0.2
 // Author: Chien-Hung Chen (github.com/chienhungchen)
 // jQuery plugin for creating droppables to use with draggabilly.js
 // This is suppose to be a barebones alternative (when coupled with draggabilly.js) to jQuery UI + touchpunch
@@ -30,15 +30,17 @@
                     flags.wasOver = true;
                     flags.invokedOutFunc = false;
                     if(!flags.hasDropped && !flags.invokedOverFunc) {
-                        options.over(droppabilly, draggabilly);
-                        flags.invokedOverFunc = true;
+                        if(options.over(droppabilly, draggabilly)) {
+                            flags.invokedOverFunc = true;
+                        }
                     }
                 }
                 //event: out
                 else if(flags.wasOver && !flags.hasReleased) {
                     if(!flags.invokedOutFunc) {
-                        options.out(droppabilly, draggabilly);
-                        flags.invokedOutFunc = true; 
+                        if(options.out(droppabilly, draggabilly)) {
+                            flags.invokedOutFunc = true;
+                        }
                     }
                     flags.invokedOverFunc = false;
                 }

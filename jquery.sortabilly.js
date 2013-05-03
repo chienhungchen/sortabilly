@@ -1,8 +1,17 @@
-// jquery.sortabilly.js
-// Version: 0.0.1
-// Author: Chien-Hung Chen (github.com/chienhungchen)
-// Dependent on draggabilly.js (and it's dependencies obviously), and jquery.droppabilly.js
-// TODO: expose placeholder CSS
+/* 
+    Title:          jquery.sortabilly.js
+    Version:        0.0.1
+    Author:         Chien-Hung Chen (github.com/chienhungchen)
+    Dependencies:   Draggabilly.js, Droppabilly.js
+
+
+    Known bugs/To-do list:
+        - Exposure of placeholder CSS so user can apply their own CSS class
+        - Fix issue with Sortabilly hijacking id's 
+            (ex: placeholderId over takes the id so you can't use ids for styling the placeholder)
+        - Fix issue with css from using child selectors (ex: #id > li vs. li.class)
+*/
+
 
 (function($){
     "use strict";

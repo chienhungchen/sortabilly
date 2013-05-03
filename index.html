@@ -8,7 +8,10 @@
             body {
                 font-family: Helvetica;
             }
-            #drag {
+            ul {
+                list-style-type: none;
+            }
+            .drag {
                 width: 50px;
                 height: 50px;
                 background-color: red;
@@ -18,29 +21,44 @@
                 z-index: 2;
             }
 
-            #drop {
-                width: 100px;
-                height: 100px;
+            #sort {
+                width: 50px;
+                height: 400px;
                 background-color: gray;
                 position: absolute;
                 top: 100px;
                 left: 200px;
+                padding: 10px;
+            }
+
+            .sortable{
+                width: 50px;
+                height: 50px;
+                background-color: gold;
+                margin: 5px 0;
             }
         </style>
     </head>
     <body>
         <div id="info">
+            <div id="drag-info"><b>Draggabilly Says:</b> <span></span></div>
             <div id="sort-info"><b>Sortabilly Says:</b> <span></span></div>
         </div>
-        <div id="drag"></div>
-        <div id="drop"></div>
+        <ul><li class="drag"></li></ul>
+        <ul id="sort">
+            <li class="sortable"><span class="handle">1</span></li>
+            <li class="sortable"><span class="handle">2</span></li>
+            <li class="sortable"><span class="handle">3</span></li>
+            <li class="sortable"><span class="handle">4</span></li>
+            <li class="sortable"><span class="handle">5</span></li>
+        </ul>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script src="http://draggabilly.desandro.com/draggabilly.pkgd.min.js"></script>
+        <script src="http://draggabilly.desandro.com/draggabilly.pkgd.js"></script>
         <script src="jquery.droppabilly.js"></script>
         <script src="jquery.sortabilly.js"></script>
         <script>
             $(function(){
-                var dragster = new Draggabilly($("#drag")[0]);
+                var dragster = new Draggabilly($(".drag")[0]);
 
                 function onDragMove( instance, event, pointer ) {
                     $('#drag-info > span').text('onDragMove');
@@ -59,16 +77,23 @@
                 dragster.on('dragStart', onDragStart);
                 dragster.on('dragEnd', onDragEnd);
 
-                $('#drop').droppabilly({
-                    dragsters: '#drag',
-                    over: function(drop, drag) {
-                        $('#drop-info > span').text('over event triggered');
-                    },
-                    out: function(drop, drag) {
-                        $('#drop-info > span').text('out event triggered');
-                    },
-                    drop: function(drop, drag) {
-                        $('#drop-info > span').text('drop event triggered');
+                
+                $('#sort').sortabilly({
+                    //handle: '.handle',
+                    containment: '#sort',
+                    overlapSensitivity: 0.6,
+                    animationDuration: 300,
+                    connect: {
+                        elements: '.drag',
+                        over: function(sort, drag) {
+                            $('#sort-info > span').text('connect - over event triggered');
+                        },
+                        out: function(sort, drag) {
+                            $('#sort-info > span').text('connect - out event triggered');
+                        },
+                        drop: function(sort, drag) {
+                            $('#sort-info > span').text('connect - drop event triggered');
+                        }
                     }
                 });
             });
